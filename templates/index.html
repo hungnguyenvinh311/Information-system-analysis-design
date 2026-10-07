@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Commerce Multimodal Search System | Assignment 06</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --border: rgba(255, 255, 255, 0.1);
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.3);
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: radial-gradient(circle at 10% 20%, #1e1b4b 0%, #0f172a 90%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge-sub {
+      display: inline-block;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      background: rgba(139, 92, 246, 0.2);
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      color: #c4b5fd;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.8rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff 0%, #93c5fd 50%, #c4b5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    /* Tabs */
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      padding: 0.75rem 1.4rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .tab-btn:hover {
+      border-color: var(--primary);
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+      border-color: var(--primary);
+      color: #60a5fa;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    /* Search Box */
+    .search-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.8rem;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 0.9rem 1.25rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-main);
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    .btn-search {
+      padding: 0 1.8rem;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+
+    .btn-search:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    /* Preset chips */
+    .presets {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .chip {
+      padding: 0.3rem 0.7rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      color: #93c5fd;
+      transition: background 0.15s;
+    }
+
+    .chip:hover {
+      background: rgba(59, 130, 246, 0.2);
+    }
+
+    /* Pipeline tracker */
+    .pipeline-card {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+    }
+
+    .pipeline-title {
+      color: #a78bfa;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .step-log {
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    .step-log span { color: #38bdf8; }
+
+    /* Results Grid */
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .score-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.25rem 0.6rem;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .prod-cat {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #a78bfa;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .prod-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      padding-right: 3rem;
+      color: #f1f5f9;
+    }
+
+    .prod-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .prod-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.8rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .prod-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    .prod-stock {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Order Card */
+    .order-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge-sub">Assignment 06 • Software Architecture & AI Prototype</div>
+      <h1>Multimodal E-Commerce Search</h1>
+      <p class="subtitle">Unified Product Discovery across Text, Voice, and Visual Image Modalities</p>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchMode('text', this)">
+        <span>🔤</span> Text Search
+      </button>
+      <button class="tab-btn" onclick="switchMode('voice', this)">
+        <span>🎙️</span> Voice Search (Simulated)
+      </button>
+      <button class="tab-btn" onclick="switchMode('image', this)">
+        <span>🖼️</span> Image Similarity
+      </button>
+      <button class="tab-btn" onclick="switchMode('order', this)">
+        <span>📦</span> Order Tracking
+      </button>
+      <button class="tab-btn" onclick="switchMode('multimodal', this)">
+        <span>⚡</span> Multimodal Fusion
+      </button>
+    </div>
+
+    <!-- Search Panel -->
+    <div class="search-panel">
+      <div class="input-row">
+        <input type="text" id="queryInput" class="search-input" placeholder="Enter keywords (e.g., black running shoes)...">
+        <button class="btn-search" onclick="executeSearch()">Search</button>
+      </div>
+
+      <div class="presets" id="presetsRow">
+        <span>Quick Presets:</span>
+        <button class="chip" onclick="applyPreset('black running shoes')">black running shoes</button>
+        <button class="chip" onclick="applyPreset('blue shoes')">blue shoes</button>
+        <button class="chip" onclick="applyPreset('apple iphone')">apple iphone</button>
+        <button class="chip" onclick="applyPreset('leather bag')">leather bag</button>
+      </div>
+    </div>
+
+    <!-- Pipeline Step Logger -->
+    <div class="pipeline-card" id="pipelineCard">
+      <div class="pipeline-title">⚙️ Architecture Execution Pipeline</div>
+      <div id="pipelineLogs" class="step-log">
+        Submit a query above to observe: Input → QueryService → Retrieval → Ranking → Presentation.
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-header">
+      <h2 id="resultsHeading" style="font-size: 1.25rem; font-weight: 600;">Catalog Results</h2>
+      <span id="resultsCount" style="color: var(--text-muted); font-size: 0.9rem;">Ready for queries</span>
+    </div>
+
+    <div class="results-grid" id="resultsGrid">
+      {% for p in catalog %}
+      <div class="product-card">
+        <div class="prod-cat">{{ p.category }}</div>
+        <div class="prod-name">{{ p.name }}</div>
+        <div class="prod-desc">{{ p.description }}</div>
+        <div class="prod-footer">
+          <div class="prod-price">${{ p.price }}</div>
+          <div class="prod-stock">Stock: {{ p.stock }} ({{ p.color }})</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script>
+    let currentMode = 'text';
+
+    const modeConfig = {
+      text: {
+        placeholder: "Enter keyword query (e.g., black running shoes, blue jeans)...",
+        presets: ["black running shoes", "blue shoes", "iphone", "leather bag"]
+      },
+      voice: {
+        placeholder: "Spoken query (e.g., find blue running shoes, show me apple iphone)...",
+        presets: ["find blue running shoes", "show me nike shoes", "search for laptop", "i want to buy black hoodie"]
+      },
+      image: {
+        placeholder: "Image feature preset or file (e.g., shoe_image, phone_image, bag_image)...",
+        presets: ["shoe_image", "phone_image", "laptop_image", "shirt_image", "bag_image"]
+      },
+      order: {
+        placeholder: "Enter Order ID (e.g., O001, O002, O003)...",
+        presets: ["O001", "O002", "O003", "O004", "O999"]
+      },
+      multimodal: {
+        placeholder: "Text + Image mode. Format: 'text_query | image_preset' (e.g., black | shoe_image)",
+        presets: ["shoes | shoe_image", "black | bag_image", "electronics | phone_image"]
+      }
+    };
+
+    function switchMode(mode, btn) {
+      currentMode = mode;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const conf = modeConfig[mode];
+      const input = document.getElementById('queryInput');
+      input.placeholder = conf.placeholder;
+      input.value = conf.presets[0] || '';
+
+      const presetsDiv = document.getElementById('presetsRow');
+      presetsDiv.innerHTML = '<span>Quick Presets:</span>' + conf.presets.map(p => 
+        `<button class="chip" onclick="applyPreset('${p}')">${p}</button>`
+      ).join('');
+    }
+
+    function applyPreset(val) {
+      document.getElementById('queryInput').value = val;
+      executeSearch();
+    }
+
+    async function executeSearch() {
+      const query = document.getElementById('queryInput').value.trim();
+      if (!query) return;
+
+      const pipelineLogs = document.getElementById('pipelineLogs');
+      pipelineLogs.innerHTML = "Processing query through 3-layer architecture...";
+
+      let payload = { mode: currentMode, query: query };
+      if (currentMode === 'multimodal') {
+        const parts = query.split('|').map(s => s.trim());
+        payload = {
+          mode: 'multimodal',
+          text: parts[0] || '',
+          image: parts[1] || parts[0] || ''
+        };
+      }
+
+      try {
+        const res = await fetch('/api/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        renderResults(data);
+      } catch (err) {
+        pipelineLogs.innerHTML = `<span style="color: #ef4444;">Error executing query: ${err.message}</span>`;
+      }
+    }
+
+    function renderResults(data) {
+      const pipelineLogs = document.getElementById('pipelineLogs');
+      const resultsGrid = document.getElementById('resultsGrid');
+      const resultsCount = document.getElementById('resultsCount');
+
+      // Update Pipeline
+      pipelineLogs.innerHTML = data.processing.map(step => `<div>→ <span>${step}</span></div>`).join('');
+
+      // If Order Search
+      if (data.mode === 'Order') {
+        resultsCount.innerText = data.found ? 'Order Found' : 'Order Not Found';
+        if (data.found) {
+          const o = data.order;
+          resultsGrid.innerHTML = `
+            <div class="order-card" style="grid-column: 1 / -1;">
+              <h3 style="color: #38bdf8; margin-bottom: 0.5rem;">Order #${o.order_id}</h3>
+              <p>Customer ID: <strong>${o.customer_id}</strong></p>
+              <p>Status: <span style="color: #34d399; font-weight: 600;">${o.status}</span></p>
+              <p>Total: <strong>$${o.total}</strong></p>
+              <p>Purchased Items: ${o.items.join(', ')}</p>
+            </div>
+          `;
+        } else {
+          resultsGrid.innerHTML = `<div style="grid-column: 1 / -1; color: #f87171;">No order matching ID '${data.query}' was found.</div>`;
+        }
+        return;
+      }
+
+      // If Product Search
+      const items = data.results || [];
+      resultsCount.innerText = `${items.length} matching candidates ranked`;
+
+      if (items.length === 0) {
+        resultsGrid.innerHTML = `<div style="grid-column: 1 / -1; color: var(--text-muted); text-align: center; padding: 2rem;">No matching products found.</div>`;
+        return;
+      }
+
+      resultsGrid.innerHTML = items.map(([p, score]) => `
+        <div class="product-card">
+          <div class="score-badge">Score: ${score}</div>
+          <div class="prod-cat">${p.category}</div>
+          <div class="prod-name">${p.name}</div>
+          <div class="prod-desc">${p.description}</div>
+          <div class="prod-footer">
+            <div class="prod-price">$${p.price}</div>
+            <div class="prod-stock">${p.stock} in stock (${p.color})</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Enable Enter key
+    document.getElementById('queryInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') executeSearch();
+    });
+  </script>
+</body>
+</html>

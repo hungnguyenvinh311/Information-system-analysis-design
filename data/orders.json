@@ -1,0 +1,30 @@
+[
+  {
+    "order_id": "O001",
+    "customer_id": "C001",
+    "status": "Shipped",
+    "total": 195.0,
+    "items": ["Nike Air Zoom Running Shoes", "Puma Classic Suede Shoes"]
+  },
+  {
+    "order_id": "O002",
+    "customer_id": "C002",
+    "status": "Delivered",
+    "total": 1199.0,
+    "items": ["Apple iPhone 15 Pro Max"]
+  },
+  {
+    "order_id": "O003",
+    "customer_id": "C003",
+    "status": "Processing",
+    "total": 124.9,
+    "items": ["Zara Slim Fit Oxford Shirt", "Uniqlo Ultra Light Down Jacket"]
+  },
+  {
+    "order_id": "O004",
+    "customer_id": "C001",
+    "status": "Delivered",
+    "total": 69.5,
+    "items": ["Levi's 501 Original Fit Jeans"]
+  }
+]
